@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+ <script>
+  // Lista dozwolonych domen (możesz dodać subdomeny, jeśli potrzeba)
+  const allowedDomains = [
+    "bethink.pl",
+    "wiecejnizmatura.pl"
+  ];
+
+  // Funkcja sprawdzająca, czy referrer zawiera dozwoloną domenę
+  function isAllowedReferrer(ref) {
+    if (!ref) return false;
+    try {
+      const url = new URL(ref);
+      return allowedDomains.some(domain => url.hostname.endsWith(domain));
+    } catch {
+      return false;
+    }
+  }
+
+  // Sprawdź, czy strona jest osadzona w iframe
+  if (window !== window.parent) {
+    const referrer = document.referrer;
+    if (!isAllowedReferrer(referrer)) {
+      document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;'><h1 style='color:red;text-align:center;font-size:2rem;'>Ta gra może być osadzana <br>tylko na platformach Bethink lub Więcej niż Matura.</h1></div>";
+      // Opcjonalnie blokada działania gry:
+      throw new Error("Embedding not allowed outside bethink.pl or wiecejnizmatura.pl!");
+    }
+  }
+</script>
+
 <meta charset="UTF-8">
 <title>Mini Heroes: Zbieracz Zasobów (Wypasiona Wersja)</title>
 <style>
